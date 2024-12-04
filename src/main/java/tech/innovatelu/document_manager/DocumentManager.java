@@ -9,19 +9,19 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * For implement this task focus on clear code, and make this solution as simple readable as possible
- * Don't worry about performance, concurrency, etc
- * You can use in Memory collection for sore data
+ * For implement this task focus on clear code, and make this solution as simple readable as possible.
+ * Don't worry about performance, concurrency, etc.
+ * You can use an in-memory collection for store data.
  * <p>
- * Please, don't change class name, and signature for methods save, search, findById
+ * Please, don't change class name, and signature for methods "save", "search", "findById"
  * Implementations should be in a single class
  * This class could be auto tested
  */
 public class DocumentManager {
 
     /**
-     * Implementation of this method should upsert the document to your storage
-     * And generate unique id if it does not exist, don't change [created] field
+     * Implementation of this method should upsert the [document] to your storage
+     * and generate unique "id" if it does not exist, don't change [created] field.
      *
      * @param document - document content and author data
      * @return saved document
@@ -32,7 +32,7 @@ public class DocumentManager {
     }
 
     /**
-     * Implementation this method should find documents which match with request
+     * Implementation of this method should find documents which match with [request].
      *
      * @param request - search request, each field could be null
      * @return list matched documents
@@ -43,7 +43,7 @@ public class DocumentManager {
     }
 
     /**
-     * Implementation this method should find document by id
+     * Implementation of this method should find document by [id].
      *
      * @param id - document id
      * @return optional document
@@ -79,4 +79,5 @@ public class DocumentManager {
         private String id;
         private String name;
     }
+
 }
