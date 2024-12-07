@@ -4,12 +4,12 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * For implement this task focus on clear code, and make this solution as simple
@@ -102,12 +102,42 @@ public class DocumentManager {
     /**
      * Implementation of this method should find documents which match with [request].
      *
-     * @param request - search request, each field could be null
+     * @param searchRequest - search request, each field could be null
      * @return list matched documents
      */
-    public List<Document> search(SearchRequest request) {
+    public List<Document> search(SearchRequest searchRequest) {
+        return documentStorage.values()
+                              .stream()
+                              .filter(document -> matchesSearchRequest(document,
+                                                                       searchRequest))
+                              .collect(Collectors.toList());
+    }
 
-        return Collections.emptyList();
+    private boolean matchesSearchRequest(Document document,
+                                         SearchRequest searchRequest) {
+        if (searchRequest == null)
+            return true;
+
+        return (searchRequest.getTitlePrefixes() == null
+                || searchRequest.getTitlePrefixes()
+                                .stream()
+                                .anyMatch(prefix -> document.getTitle()
+                                                            .startsWith(prefix)))
+               && (searchRequest.getContainsContents() == null
+                   || searchRequest.getContainsContents()
+                                   .stream()
+                                   .anyMatch(content -> document.getContent()
+                                                                .contains(content)))
+               && (searchRequest.getAuthorIds() == null
+                   || searchRequest.getAuthorIds()
+                                   .contains(document.getAuthor()
+                                                     .getId()))
+               && (searchRequest.getCreatedFrom() == null
+                   || !document.getCreated()
+                               .isBefore(searchRequest.getCreatedFrom()))
+               && (searchRequest.getCreatedTo() == null
+                   || !document.getCreated()
+                               .isAfter(searchRequest.getCreatedTo()));
     }
 
     /**
