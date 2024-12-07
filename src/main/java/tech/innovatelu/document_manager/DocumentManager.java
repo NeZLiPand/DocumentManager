@@ -118,26 +118,62 @@ public class DocumentManager {
         if (searchRequest == null)
             return true;
 
+        return matching(document,
+                        searchRequest);
+    }
+
+    private boolean matching(Document document,
+                             SearchRequest searchRequest) {
+        return matchesTitle(document,
+                            searchRequest)
+               && matchesContent(document,
+                                 searchRequest)
+               && matchesAuthorIds(document,
+                                   searchRequest)
+               && matchesCreatedFrom(document,
+                                     searchRequest)
+               && matchesCreatedTo(document,
+                                   searchRequest);
+    }
+
+    private boolean matchesTitle(Document document,
+                                 SearchRequest searchRequest) {
         return (searchRequest.getTitlePrefixes() == null
                 || searchRequest.getTitlePrefixes()
                                 .stream()
                                 .anyMatch(prefix -> document.getTitle()
-                                                            .startsWith(prefix)))
-               && (searchRequest.getContainsContents() == null
-                   || searchRequest.getContainsContents()
-                                   .stream()
-                                   .anyMatch(content -> document.getContent()
-                                                                .contains(content)))
-               && (searchRequest.getAuthorIds() == null
-                   || searchRequest.getAuthorIds()
-                                   .contains(document.getAuthor()
-                                                     .getId()))
-               && (searchRequest.getCreatedFrom() == null
-                   || !document.getCreated()
-                               .isBefore(searchRequest.getCreatedFrom()))
-               && (searchRequest.getCreatedTo() == null
-                   || !document.getCreated()
-                               .isAfter(searchRequest.getCreatedTo()));
+                                                            .startsWith(prefix)));
+    }
+
+    private boolean matchesContent(Document document,
+                                   SearchRequest searchRequest) {
+        return (searchRequest.getContainsContents() == null
+                || searchRequest.getContainsContents()
+                                .stream()
+                                .anyMatch(content -> document.getContent()
+                                                             .contains(content)));
+    }
+
+    private boolean matchesAuthorIds(Document document,
+                                     SearchRequest searchRequest) {
+        return (searchRequest.getAuthorIds() == null
+                || searchRequest.getAuthorIds()
+                                .contains(document.getAuthor()
+                                                  .getId()));
+    }
+
+    private boolean matchesCreatedFrom(Document document,
+                                       SearchRequest searchRequest) {
+        return (searchRequest.getCreatedFrom() == null
+                || !document.getCreated()
+                            .isBefore(searchRequest.getCreatedFrom()));
+    }
+
+    private boolean matchesCreatedTo(Document document,
+                                     SearchRequest searchRequest) {
+        return (searchRequest.getCreatedTo() == null
+                || !document.getCreated()
+                            .isAfter(searchRequest.getCreatedTo()));
     }
 
     /**
