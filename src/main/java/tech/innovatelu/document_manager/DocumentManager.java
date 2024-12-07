@@ -21,17 +21,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * auto tested
  */
 public class DocumentManager {
-
+    // TODO add in commit info about removed uselles info from doc
     private final Map<String, Document> documentStorage = new ConcurrentHashMap<>();
 
     /**
-     * Task Implementation of this method should upsert the [document] to your
+     * Implementation of this method should upsert the [document] to your
      * storage and generate unique [id] if it does not exist, don't change [created]
      * field.
-     *
-     * Solution This method upsert the [document] to your storage and generate
-     * unique [id] if it does not exist, but will not change [created] field.
-     *
+     * 
      * @param document - document content and author data
      * @return saved document
      */
@@ -49,14 +46,10 @@ public class DocumentManager {
             if (isDocumentPresentInStorage(id)) {
                 return updateDocument(document);
             } else {
-                return putNewDocument(id,
-                                      document);
+                return putNewDocument(document);
             }
         } else {
-            id = getUniqueId();
-            document.setId(id);
-            return putNewDocument(id,
-                                  document);
+            return putNewDocument(setUniqueId(document));
         }
 
     }
@@ -94,21 +87,20 @@ public class DocumentManager {
                                                                        + " not found"));
     }
 
-    private Document putNewDocument(String id,
-                                    Document document) {
-        documentStorage.put(id,
+    private Document putNewDocument(Document document) {
+        documentStorage.put(document.getId(),
                             document);
         return document;
     }
 
-    private String getUniqueId() {
-        return UUID.randomUUID()
-                   .toString();
+    private Document setUniqueId(Document document) {
+        document.setId(UUID.randomUUID()
+                           .toString());
+        return document;
     }
 
     /**
-     * Task Implementation of this method should find documents which match with
-     * [request].
+     * Implementation of this method should find documents which match with [request].
      *
      * @param request - search request, each field could be null
      * @return list matched documents
@@ -119,7 +111,7 @@ public class DocumentManager {
     }
 
     /**
-     * Task Implementation of this method should find document by [id].
+     * Implementation of this method should find document by [id].
      *
      * @param id - document id
      * @return optional document
