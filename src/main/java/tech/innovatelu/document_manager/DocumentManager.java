@@ -80,11 +80,10 @@ public class DocumentManager {
     }
 
     private Instant getOldDocumentCreationDate(String idOldDocument) {
-        return Optional.ofNullable(documentStorage.get(idOldDocument))
-                       .map(Document::getCreated)
-                       .orElseThrow(() -> new IllegalArgumentException("Document with ID "
-                                                                       + idOldDocument
-                                                                       + " not found"));
+        return getDocumentFromStorage(idOldDocument).map(Document::getCreated)
+                                                    .orElseThrow(() -> new IllegalArgumentException("Document with ID "
+                                                                                                    + idOldDocument
+                                                                                                    + " not found"));
     }
 
     private Document putNewDocument(Document document) {
@@ -183,8 +182,11 @@ public class DocumentManager {
      * @return optional document
      */
     public Optional<Document> findById(String id) {
+        return getDocumentFromStorage(id);
+    }
 
-        return Optional.empty();
+    private Optional<Document> getDocumentFromStorage(String id) {
+        return Optional.ofNullable(documentStorage.get(id));
     }
 
     @Data
