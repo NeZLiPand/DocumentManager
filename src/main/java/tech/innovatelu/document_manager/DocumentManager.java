@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
  * auto tested
  */
 public class DocumentManager {
-    // TODO add in commit info about removed uselles info from doc
     private final Map<String, Document> documentStorage = new ConcurrentHashMap<>();
 
     /**
@@ -182,6 +181,8 @@ public class DocumentManager {
      * @return optional document
      */
     public Optional<Document> findById(String id) {
+        if (id == null)
+            throw new IllegalArgumentException("Document ID cannot be null");
         return getDocumentFromStorage(id);
     }
 
